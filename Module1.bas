@@ -44,7 +44,10 @@ On Error GoTo ErrH_Click
 
     ' オブジェクトと接続の処理
     If myServer.Connected Then
-      myServer.Close
+        'PISDK2014R2の前のバージョンでは、接続の処理に関する問題があるので、
+        '明示的に切断しない
+        'PISDK2014R2の以降のバージョンでは、下記の行のコメントを削除するとお勧めです
+        'myServer.Close
     End If
     
     Set myServer = Nothing
