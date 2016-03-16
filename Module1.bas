@@ -1,4 +1,3 @@
-Attribute VB_Name = "Module1"
 '   Copyright 2016 OSIsoft, LLC.
 '   Licensed under the Apache License, Version 2.0 (the "License");
 '   you may not use this file except in compliance with the License.
@@ -36,9 +35,13 @@ On Error GoTo ErrH_Click
     'PI Serverに接続し、タグの定義の設定
     Dim myServer As PISDK.Server
     Dim myTag As PISDK.PIPoint
+    
     Set myServer = Servers(serverName)
+    'Explict Loginを使う場合は、ユーザー名とパスワードの設定
+    myServer.Open ("uid=piLoginDemo;pwd=!")
+    
     Set myTag = myServer.PIPoints(tagName)
-        
+
     ' 値の登録
     myTag.Data.UpdateValue value, timestamp
 
@@ -47,7 +50,7 @@ On Error GoTo ErrH_Click
         'PISDK2014R2の前のバージョンでは、接続の処理に関する問題があるので、
         '明示的に切断しない
         'PISDK2014R2の以降のバージョンでは、下記の行のコメントを削除するとお勧めです
-        'myServer.Close
+        myServer.Close
     End If
     
     Set myServer = Nothing
