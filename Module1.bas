@@ -15,40 +15,45 @@ Sub WriteDataToPI_Click()
 
 On Error GoTo ErrH_Click
     
-    ' Excel‚ÌƒV[ƒg‚Ì‘I‘ğ
+    ' Excelã®ã‚·ãƒ¼ãƒˆã®é¸æŠ
     ' Select the sheet
     Dim sourceBook As Workbook
     Dim sourceSheet As Worksheet
     Set sourceBook = ActiveWorkbook
     Set sourceSheet = sourceBook.Sheets("Sheet1")
     
-    ' ƒV[ƒg‚©‚çƒf[ƒ^‚ÌûW
+    ' ã‚·ãƒ¼ãƒˆã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã®åé›†
     ' Get data from the sheet
-    Dim serverName As String
+    Dim serverNames As String
+    Dim serverName As Variant
     Dim tagName As String
     Dim timestamp As String
     Dim value As String
 
-    serverName = sourceSheet.Range("B1")
+    serverNames = sourceSheet.Range("B1")
     tagName = sourceSheet.Range("B2")
     timestamp = sourceSheet.Range("B3")
     value = sourceSheet.Range("B4")
-    
-    'PI Server‚ÉÚ‘±‚µAƒ^ƒO‚Ì’è‹`‚Ìİ’è
-    'Connect to the PI Server and retrive the tag
-    Dim myServer As PISDK.Server
-    Dim myTag As PISDK.PIPoint
-    
-    Set myServer = Servers(serverName)
-    'Explict Login‚ğg‚¤ê‡‚ÍAƒ†[ƒU[–¼‚ÆƒpƒXƒ[ƒh‚Ìİ’è
-    'If explicit login is required specify the username and password
-    'myServer.Open ("uid=piLoginDemo;pwd=!")
-    
-    Set myTag = myServer.PIPoints(tagName)
 
-    ' ’l‚Ì“o˜^
-    ' Update the tag
-    myTag.Data.UpdateValue value, timestamp
+    For Each serverName In Split(serverNames, "|")
+        
+        'PI Serverã«æ¥ç¶šã—ã€ã‚¿ã‚°ã®å®šç¾©ã®è¨­å®š
+        'Connect to the PI Server and retrive the tag
+        Dim myServer As PISDK.Server
+        Dim myTag As PISDK.PIPoint
+        
+        Set myServer = Servers(serverName)
+        'Explict Loginã‚’ä½¿ã†å ´åˆã¯ã€ãƒ¦ãƒ¼ã‚¶ãƒ¼åã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®è¨­å®š
+        'If explicit login is required specify the username and password
+        'myServer.Open ("uid=piLoginDemo;pwd=!")
+        
+        Set myTag = myServer.PIPoints(tagName)
+    
+        ' å€¤ã®ç™»éŒ²
+        ' Update the tag
+        myTag.Data.UpdateValue value, timestamp
+    
+    Next serverName
     
 Exit_Click:
     Exit Sub
